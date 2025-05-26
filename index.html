@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2196F3">
+    <title>KenKen Puzzle Game</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicon and Apple Touch Icon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nishka's KenKen</h1>
+        </header>
+        
+        <div class="game-container">
+            <div id="puzzle-grid" class="puzzle-grid"></div>
+            <div id="number-pad" class="number-pad hidden"></div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="grid-size">Grid Size:</label>
+                <select id="grid-size">
+                    <option value="3">3×3</option>
+                    <option value="4" selected>4×4</option>
+                    <option value="5">5×5</option>
+                    <option value="6">6×6</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="operators">Operators:</label>
+                <div class="operator-checkboxes">
+                    <label><input type="checkbox" value="+" checked> +</label>
+                    <label><input type="checkbox" value="-" checked> −</label>
+                    <label><input type="checkbox" value="*" checked> ×</label>
+                    <label><input type="checkbox" value="/" checked> ÷</label>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="difficulty">Difficulty:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            
+            <button id="new-game-btn" class="btn primary">New Game</button>
+            <button id="hint-btn" class="btn secondary">Hint</button>
+            <button id="check-btn" class="btn secondary">Check</button>
+        </div>
+        
+        <div class="game-info">
+            <div id="status" class="status">Generate a new puzzle to start playing!</div>
+            <div id="timer" class="timer">00:00</div>
+        </div>
+        
+        <div id="win-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Congratulations! 🎉</h2>
+                <p>You solved the puzzle!</p>
+                <p>Time: <span id="final-time"></span></p>
+                <button id="new-game-modal-btn" class="btn primary">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="kenken.js"></script>
+    <script src="app.js"></script>
+    
+    <!-- PWA Installation Script -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html> 
