@@ -101,6 +101,9 @@ class KenKenApp {
         const size = this.puzzle.size;
         this.puzzleGrid.innerHTML = '';
         this.puzzleGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+        
+        // Add grid size class for responsive styling
+        this.puzzleGrid.className = `puzzle-grid grid-${size}x${size}`;
 
         // Create cage colors
         const cageColors = this.generateCageColors(this.puzzle.cages.length);
