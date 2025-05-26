@@ -1,14 +1,14 @@
-// Service Worker for KenKen PWA
-const CACHE_NAME = 'kenken-v1.0.0';
+// Service Worker for Nishka's KenKen PWA
+const CACHE_NAME = 'nishkas-kenken-v1.0.0';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/kenken.js',
-  '/app.js',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/kenken/',
+  '/kenken/index.html',
+  '/kenken/styles.css',
+  '/kenken/kenken.js',
+  '/kenken/app.js',
+  '/kenken/manifest.json',
+  '/kenken/icon-192.png',
+  '/kenken/icon-512.png'
 ];
 
 // Install event - cache resources
@@ -55,7 +55,7 @@ self.addEventListener('fetch', (event) => {
       .catch(() => {
         // Return offline page if available
         if (event.request.destination === 'document') {
-          return caches.match('/index.html');
+          return caches.match('/kenken/index.html');
         }
       })
   );
@@ -89,16 +89,16 @@ self.addEventListener('sync', (event) => {
 self.addEventListener('push', (event) => {
   const options = {
     body: 'New KenKen puzzle available!',
-    icon: '/icon-192.png',
-    badge: '/icon-192.png',
+    icon: '/kenken/icon-192.png',
+    badge: '/kenken/icon-192.png',
     vibrate: [200, 100, 200],
     data: {
-      url: '/'
+      url: '/kenken/'
     }
   };
 
   event.waitUntil(
-    self.registration.showNotification('KenKen Puzzle', options)
+    self.registration.showNotification("Nishka's KenKen", options)
   );
 });
 
