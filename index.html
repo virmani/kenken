@@ -58,8 +58,8 @@
             </div>
             
             <button id="new-game-btn" class="btn primary">New Game</button>
-            <button id="hint-btn" class="btn secondary">Hint</button>
             <button id="check-btn" class="btn secondary">Check</button>
+            <button id="how-to-play-btn" class="btn secondary">How to Play</button>
         </div>
         
         <div class="game-info">
@@ -73,6 +73,44 @@
                 <p>You solved the puzzle!</p>
                 <p>Time: <span id="final-time"></span></p>
                 <button id="new-game-modal-btn" class="btn primary">Play Again</button>
+            </div>
+        </div>
+
+        <div id="how-to-play-modal" class="modal hidden">
+            <div class="modal-content how-to-play">
+                <h2>How to Play KenKen</h2>
+                <div class="rules-content">
+                    <div class="rule">
+                        <h3>🎯 Objective</h3>
+                        <p>Fill the grid so that each row and column contains all numbers from 1 to N (where N is the grid size), without repeating any number.</p>
+                    </div>
+                    
+                    <div class="rule">
+                        <h3>🔢 Cage Rules</h3>
+                        <p>Each outlined area (cage) has a target number and operation. The numbers in that cage must combine using the given operation to equal the target.</p>
+                        <ul>
+                            <li><strong>Addition (+):</strong> Numbers add up to the target</li>
+                            <li><strong>Subtraction (−):</strong> Difference between numbers equals target</li>
+                            <li><strong>Multiplication (×):</strong> Numbers multiply to the target</li>
+                            <li><strong>Division (÷):</strong> One number divided by another equals target</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="rule">
+                        <h3>📱 How to Play</h3>
+                        <p>Tap any cell to select it, then choose a number from the number pad. Use logic and math to solve the puzzle!</p>
+                    </div>
+                    
+                    <div class="rule">
+                        <h3>💡 Tips</h3>
+                        <ul>
+                            <li>Start with single-cell cages (they show the exact number)</li>
+                            <li>Look for cages with only one possible combination</li>
+                            <li>Use the Latin square rule: no repeats in rows/columns</li>
+                        </ul>
+                    </div>
+                </div>
+                <button id="close-how-to-play-btn" class="btn primary">Got It!</button>
             </div>
         </div>
     </div>

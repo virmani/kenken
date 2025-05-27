@@ -18,8 +18,8 @@ class KenKenApp {
         this.difficultySelect = document.getElementById('difficulty');
         this.operatorCheckboxes = document.querySelectorAll('.operator-checkboxes input[type="checkbox"]');
         this.newGameBtn = document.getElementById('new-game-btn');
-        this.hintBtn = document.getElementById('hint-btn');
         this.checkBtn = document.getElementById('check-btn');
+        this.howToPlayBtn = document.getElementById('how-to-play-btn');
         this.puzzleGrid = document.getElementById('puzzle-grid');
         this.numberPad = document.getElementById('number-pad');
         this.statusDiv = document.getElementById('status');
@@ -27,18 +27,28 @@ class KenKenApp {
         this.winModal = document.getElementById('win-modal');
         this.finalTimeSpan = document.getElementById('final-time');
         this.newGameModalBtn = document.getElementById('new-game-modal-btn');
+        this.howToPlayModal = document.getElementById('how-to-play-modal');
+        this.closeHowToPlayBtn = document.getElementById('close-how-to-play-btn');
     }
 
     bindEvents() {
         this.newGameBtn.addEventListener('click', () => this.generateNewGame());
         this.newGameModalBtn.addEventListener('click', () => this.closeModalAndGenerateNew());
-        this.hintBtn.addEventListener('click', () => this.showHint());
         this.checkBtn.addEventListener('click', () => this.checkSolution());
+        this.howToPlayBtn.addEventListener('click', () => this.showHowToPlay());
+        this.closeHowToPlayBtn.addEventListener('click', () => this.closeHowToPlay());
         
         // Close number pad when clicking outside
         document.addEventListener('click', (e) => {
             if (!this.numberPad.contains(e.target) && !e.target.classList.contains('cage')) {
                 this.hideNumberPad();
+            }
+        });
+
+        // Close modals when clicking outside
+        this.howToPlayModal.addEventListener('click', (e) => {
+            if (e.target === this.howToPlayModal) {
+                this.closeHowToPlay();
             }
         });
 
@@ -334,20 +344,7 @@ class KenKenApp {
         }
     }
 
-    showHint() {
-        if (!this.puzzle || this.gameCompleted) return;
 
-        const hint = this.puzzle.getHint();
-        if (hint) {
-            const cell = this.getCellElement(hint.row, hint.col);
-            cell.classList.add('pulse');
-            setTimeout(() => cell.classList.remove('pulse'), 600);
-            
-            this.updateStatus(`Hint: Try ${hint.value} in the highlighted cell`);
-        } else {
-            this.updateStatus('No hints available!');
-        }
-    }
 
     checkSolution() {
         if (!this.puzzle) return;
@@ -408,6 +405,14 @@ class KenKenApp {
     closeModalAndGenerateNew() {
         this.winModal.classList.add('hidden');
         this.generateNewGame();
+    }
+
+    showHowToPlay() {
+        this.howToPlayModal.classList.remove('hidden');
+    }
+
+    closeHowToPlay() {
+        this.howToPlayModal.classList.add('hidden');
     }
 
     updateStatus(message) {
