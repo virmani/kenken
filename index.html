@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#2196F3">
     <title>Nishka's KenKen</title>
     
@@ -22,50 +22,62 @@
             <h1>Nishka's KenKen</h1>
         </header>
         
-        <div class="game-container">
-            <div id="puzzle-grid" class="puzzle-grid"></div>
-            <div id="number-pad" class="number-pad hidden"></div>
-        </div>
-        
-        <div class="controls">
-            <div class="control-group">
-                <label for="grid-size">Grid Size:</label>
-                <select id="grid-size">
-                    <option value="3">3×3</option>
-                    <option value="4" selected>4×4</option>
-                    <option value="5">5×5</option>
-                    <option value="6">6×6</option>
-                </select>
+        <div class="main-content">
+            <div class="game-container">
+                <div id="puzzle-grid" class="puzzle-grid"></div>
+                <div id="number-pad" class="number-pad hidden"></div>
             </div>
             
-            <div class="control-group">
-                <label for="operators">Operators:</label>
-                <div class="operator-checkboxes">
-                    <label><input type="checkbox" value="+" checked> +</label>
-                    <label><input type="checkbox" value="-" checked> −</label>
-                    <label><input type="checkbox" value="*" checked> ×</label>
-                    <label><input type="checkbox" value="/" checked> ÷</label>
+            <div class="controls">
+                <div class="timer-container">
+                    <div id="timer" class="timer">00:00</div>
                 </div>
+                
+                <div class="control-group">
+                    <label for="grid-size">Grid Size:</label>
+                    <select id="grid-size">
+                        <option value="3">3×3</option>
+                        <option value="4" selected>4×4</option>
+                        <option value="5">5×5</option>
+                        <option value="6">6×6</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="operators">Operators:</label>
+                    <div class="operator-checkboxes">
+                        <label><input type="checkbox" value="+" checked> +</label>
+                        <label><input type="checkbox" value="-" checked> −</label>
+                        <label><input type="checkbox" value="*" checked> ×</label>
+                        <label><input type="checkbox" value="/" checked> ÷</label>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="difficulty">Difficulty:</label>
+                    <select id="difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                
+                <button id="new-game-btn" class="btn primary">New Game</button>
+                <button id="how-to-play-btn" class="btn secondary">How to Play</button>
             </div>
-            
-            <div class="control-group">
-                <label for="difficulty">Difficulty:</label>
-                <select id="difficulty">
-                    <option value="easy">Easy</option>
-                    <option value="medium" selected>Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
-            
-            <button id="new-game-btn" class="btn primary">New Game</button>
-            <button id="check-btn" class="btn secondary">Check</button>
-            <button id="how-to-play-btn" class="btn secondary">How to Play</button>
         </div>
         
-        <div class="game-info">
-            <div id="status" class="status">Generate a new puzzle to start playing!</div>
-            <div id="timer" class="timer">00:00</div>
+        <div class="refresh-container">
+            <button id="refresh-app-btn" class="btn refresh">↻ Refresh App</button>
         </div>
+        
+        <footer class="app-footer">
+            <a href="https://github.com/virmani/kenken" target="_blank" rel="noopener" class="github-link" title="View source code on GitHub">
+                <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+        </footer>
         
         <div id="win-modal" class="modal hidden">
             <div class="modal-content">
@@ -78,36 +90,27 @@
 
         <div id="how-to-play-modal" class="modal hidden">
             <div class="modal-content how-to-play">
-                <h2>How to Play KenKen</h2>
+                <h2>How to Play</h2>
                 <div class="rules-content">
                     <div class="rule">
-                        <h3>🎯 Objective</h3>
-                        <p>Fill the grid so that each row and column contains all numbers from 1 to N (where N is the grid size), without repeating any number.</p>
+                        <h3>Goal</h3>
+                        <p>Fill each row and column with numbers 1-N (no repeats).</p>
                     </div>
                     
                     <div class="rule">
-                        <h3>🔢 Cage Rules</h3>
-                        <p>Each outlined area (cage) has a target number and operation. The numbers in that cage must combine using the given operation to equal the target.</p>
+                        <h3>Cages</h3>
+                        <p>Numbers in each outlined area must equal the target using the given operation:</p>
                         <ul>
-                            <li><strong>Addition (+):</strong> Numbers add up to the target</li>
-                            <li><strong>Subtraction (−):</strong> Difference between numbers equals target</li>
-                            <li><strong>Multiplication (×):</strong> Numbers multiply to the target</li>
-                            <li><strong>Division (÷):</strong> One number divided by another equals target</li>
+                            <li><strong>+</strong> Add numbers</li>
+                            <li><strong>−</strong> Subtract numbers</li>
+                            <li><strong>×</strong> Multiply numbers</li>
+                            <li><strong>÷</strong> Divide numbers</li>
                         </ul>
                     </div>
                     
                     <div class="rule">
-                        <h3>📱 How to Play</h3>
-                        <p>Tap any cell to select it, then choose a number from the number pad. Use logic and math to solve the puzzle!</p>
-                    </div>
-                    
-                    <div class="rule">
-                        <h3>💡 Tips</h3>
-                        <ul>
-                            <li>Start with single-cell cages (they show the exact number)</li>
-                            <li>Look for cages with only one possible combination</li>
-                            <li>Use the Latin square rule: no repeats in rows/columns</li>
-                        </ul>
+                        <h3>How to Play</h3>
+                        <p>Tap a cell, then pick a number. Use logic to solve!</p>
                     </div>
                 </div>
                 <button id="close-how-to-play-btn" class="btn primary">Got It!</button>

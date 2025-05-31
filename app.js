@@ -18,25 +18,24 @@ class KenKenApp {
         this.difficultySelect = document.getElementById('difficulty');
         this.operatorCheckboxes = document.querySelectorAll('.operator-checkboxes input[type="checkbox"]');
         this.newGameBtn = document.getElementById('new-game-btn');
-        this.checkBtn = document.getElementById('check-btn');
         this.howToPlayBtn = document.getElementById('how-to-play-btn');
         this.puzzleGrid = document.getElementById('puzzle-grid');
         this.numberPad = document.getElementById('number-pad');
-        this.statusDiv = document.getElementById('status');
         this.timerDiv = document.getElementById('timer');
         this.winModal = document.getElementById('win-modal');
         this.finalTimeSpan = document.getElementById('final-time');
         this.newGameModalBtn = document.getElementById('new-game-modal-btn');
         this.howToPlayModal = document.getElementById('how-to-play-modal');
         this.closeHowToPlayBtn = document.getElementById('close-how-to-play-btn');
+        this.refreshAppBtn = document.getElementById('refresh-app-btn');
     }
 
     bindEvents() {
         this.newGameBtn.addEventListener('click', () => this.generateNewGame());
         this.newGameModalBtn.addEventListener('click', () => this.closeModalAndGenerateNew());
-        this.checkBtn.addEventListener('click', () => this.checkSolution());
         this.howToPlayBtn.addEventListener('click', () => this.showHowToPlay());
         this.closeHowToPlayBtn.addEventListener('click', () => this.closeHowToPlay());
+        this.refreshAppBtn.addEventListener('click', () => this.refreshApp());
         
         // Close number pad when clicking outside
         document.addEventListener('click', (e) => {
@@ -75,8 +74,6 @@ class KenKenApp {
 
     generateNewGame() {
         try {
-            this.updateStatus('Generating puzzle...');
-            
             // Get settings
             const size = parseInt(this.gridSizeSelect.value);
             const difficulty = this.difficultySelect.value;
@@ -85,7 +82,7 @@ class KenKenApp {
                 .map(cb => cb.value);
 
             if (operators.length === 0) {
-                this.updateStatus('Please select at least one operator!');
+                alert('Please select at least one operator!');
                 return;
             }
 
@@ -97,11 +94,9 @@ class KenKenApp {
             this.renderPuzzle();
             this.startTimer();
             this.gameCompleted = false;
-            this.updateStatus('Puzzle generated! Tap a cell to start playing.');
             
         } catch (error) {
             console.error('Error generating puzzle:', error);
-            this.updateStatus('Error generating puzzle. Please try again.');
         }
     }
 
@@ -256,6 +251,9 @@ class KenKenApp {
         this.numberPad.appendChild(clearBtn);
 
         this.numberPad.classList.remove('hidden');
+        
+        // Disable control buttons to prevent accidental clicks
+        this.disableControlButtons();
     }
 
     hideNumberPad() {
@@ -264,6 +262,9 @@ class KenKenApp {
             cell.classList.remove('selected');
         });
         this.selectedCell = null;
+        
+        // Re-enable control buttons
+        this.enableControlButtons();
     }
 
     placeNumber(row, col, num) {
@@ -344,26 +345,6 @@ class KenKenApp {
         }
     }
 
-
-
-    checkSolution() {
-        if (!this.puzzle) return;
-
-        // Check if puzzle is complete
-        if (!this.isPuzzleComplete()) {
-            this.updateStatus('Puzzle incomplete. Keep going!');
-            return;
-        }
-
-        this.updateVisualFeedback();
-        
-        if (this.puzzle.validateSolution()) {
-            this.updateStatus('Congratulations! Puzzle solved correctly! 🎉');
-        } else {
-            this.updateStatus('Puzzle has errors. Check highlighted cages.');
-        }
-    }
-
     isPuzzleComplete() {
         for (let i = 0; i < this.puzzle.size; i++) {
             for (let j = 0; j < this.puzzle.size; j++) {
@@ -372,8 +353,6 @@ class KenKenApp {
         }
         return true;
     }
-
-
 
     startTimer() {
         this.startTime = Date.now();
@@ -415,10 +394,6 @@ class KenKenApp {
         this.howToPlayModal.classList.add('hidden');
     }
 
-    updateStatus(message) {
-        this.statusDiv.textContent = message;
-    }
-
     handleKeyDown(e) {
         if (!this.selectedCell || this.gameCompleted) return;
 
@@ -437,6 +412,64 @@ class KenKenApp {
         } else if (e.key === 'Escape') {
             this.hideNumberPad();
         }
+    }
+
+    refreshApp() {
+        // Show loading state
+        this.refreshAppBtn.textContent = '↻ Refreshing...';
+        this.refreshAppBtn.disabled = true;
+        
+        // Unregister service worker and force refresh
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                Promise.all(registrations.map(registration => registration.unregister()))
+                    .then(() => {
+                        // Clear caches
+                        if ('caches' in window) {
+                            caches.keys().then(cacheNames => {
+                                Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)))
+                                    .then(() => {
+                                        // Force reload
+                                        window.location.reload(true);
+                                    });
+                            });
+                        } else {
+                            window.location.reload(true);
+                        }
+                    });
+            });
+        } else {
+            // Fallback for browsers without service worker support
+            window.location.reload(true);
+        }
+    }
+
+    disableControlButtons() {
+        // Disable buttons
+        this.newGameBtn.disabled = true;
+        this.howToPlayBtn.disabled = true;
+        this.refreshAppBtn.disabled = true;
+        
+        // Disable form controls
+        this.gridSizeSelect.disabled = true;
+        this.difficultySelect.disabled = true;
+        this.operatorCheckboxes.forEach(checkbox => {
+            checkbox.disabled = true;
+        });
+    }
+
+    enableControlButtons() {
+        // Enable buttons
+        this.newGameBtn.disabled = false;
+        this.howToPlayBtn.disabled = false;
+        this.refreshAppBtn.disabled = false;
+        
+        // Enable form controls
+        this.gridSizeSelect.disabled = false;
+        this.difficultySelect.disabled = false;
+        this.operatorCheckboxes.forEach(checkbox => {
+            checkbox.disabled = false;
+        });
     }
 }
 

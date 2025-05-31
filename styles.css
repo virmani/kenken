@@ -13,6 +13,8 @@ body {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .container {
@@ -50,6 +52,27 @@ header h1 {
     gap: 20px;
     align-items: center;
     justify-content: center;
+}
+
+/* Timer Container in Controls */
+.controls .timer-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.timer {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2196F3;
+    font-family: 'Courier New', monospace;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .control-group {
@@ -112,6 +135,8 @@ select:focus {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .btn:hover {
@@ -134,12 +159,65 @@ select:focus {
     box-shadow: 0 6px 20px rgba(117, 117, 117, 0.4);
 }
 
+.btn.refresh {
+    background: #757575;
+    box-shadow: 0 2px 8px rgba(117, 117, 117, 0.2);
+    font-size: 0.9rem;
+    padding: 8px 16px;
+}
+
+.btn.refresh:hover {
+    background: #616161;
+    box-shadow: 0 4px 12px rgba(117, 117, 117, 0.3);
+}
+
+/* Disabled state for buttons */
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    background: inherit;
+    box-shadow: inherit;
+}
+
+/* Disabled state for form controls */
+select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.operator-checkboxes label:has(input:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Game Container */
 .game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    flex: 1;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
     flex: 1;
 }
 
@@ -172,6 +250,8 @@ select:focus {
     width: clamp(50px, calc((100vw - 80px) / 6), 120px);
     height: clamp(50px, calc((100vw - 80px) / 6), 120px);
     box-sizing: border-box;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Grid-size specific cell sizing */
@@ -238,28 +318,42 @@ select:focus {
 
 /* Number Pad */
 .number-pad {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.95);
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.98);
     border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
     backdrop-filter: blur(10px);
-    max-width: 400px;
-    margin: 0 auto;
+    max-width: 450px;
+    width: calc(100vw - 40px);
+    border: 2px solid rgba(33, 150, 243, 0.3);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
 }
 
 .number-btn {
     background: #f5f5f5;
     border: 2px solid #ddd;
     border-radius: 8px;
-    padding: 15px;
-    font-size: 1.2rem;
+    padding: 20px;
+    font-size: 1.4rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     color: #333;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .number-btn:hover {
@@ -278,34 +372,6 @@ select:focus {
 .number-btn.clear:hover {
     background: #d32f2f;
     border-color: #d32f2f;
-}
-
-/* Game Info */
-.game-info {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    backdrop-filter: blur(10px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.status {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #555;
-}
-
-.timer {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #2196F3;
-    font-family: 'Courier New', monospace;
 }
 
 /* Modal */
@@ -360,7 +426,7 @@ select:focus {
 .rule {
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ddd;
 }
 
 .rule:last-child {
@@ -368,14 +434,16 @@ select:focus {
 }
 
 .rule h3 {
-    color: #2196F3;
+    color: #1976D2;
     margin-bottom: 10px;
     font-size: 1.2rem;
+    font-weight: 700;
 }
 
 .rule p {
     margin-bottom: 10px;
-    line-height: 1.5;
+    line-height: 1.6;
+    color: #2c2c2c;
 }
 
 .rule ul {
@@ -384,12 +452,14 @@ select:focus {
 }
 
 .rule li {
-    margin-bottom: 5px;
-    line-height: 1.4;
+    margin-bottom: 8px;
+    line-height: 1.5;
+    color: #2c2c2c;
 }
 
 .rule strong {
-    color: #333;
+    color: #1976D2;
+    font-weight: 700;
 }
 
 /* Utility Classes */
@@ -471,18 +541,12 @@ select:focus {
     .number-pad {
         padding: 15px;
         gap: 8px;
+        max-height: calc(100vh - 80px);
     }
     
     .number-btn {
         padding: 12px;
         font-size: 1rem;
-    }
-    
-    .game-info {
-        padding: 15px;
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
     }
     
     .modal-content {
@@ -538,17 +602,18 @@ select:focus {
     
     .number-pad {
         grid-template-columns: repeat(4, 1fr);
+        max-height: calc(100vh - 60px);
     }
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-    .controls, .game-info, .number-pad, .modal-content {
+    .controls, .number-pad, .modal-content {
         background: rgba(33, 33, 33, 0.95);
         color: #e0e0e0;
     }
     
-    .control-group label, .status {
+    .control-group label {
         color: #e0e0e0;
     }
     
@@ -571,5 +636,92 @@ select:focus {
         background: #555;
         border-color: #666;
         color: #e0e0e0;
+    }
+    
+    .modal-content.how-to-play {
+        background: #2c2c2c;
+        color: #e0e0e0;
+    }
+    
+    .rule {
+        border-bottom-color: #555;
+    }
+    
+    .rule h3 {
+        color: #64B5F6;
+    }
+    
+    .rule p, .rule li {
+        color: #e0e0e0;
+    }
+    
+    .rule strong {
+        color: #64B5F6;
+    }
+}
+
+/* Refresh Container */
+.refresh-container {
+    text-align: center;
+    margin-top: 30px;
+    padding-bottom: 20px;
+}
+
+/* App Footer */
+.app-footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.github-link {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.github-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.github-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+/* Wide screen layout */
+@media (min-width: 1024px) {
+    .main-content {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .game-container {
+        flex: 0 0 auto;
+        min-width: 0;
+    }
+    
+    .controls {
+        flex: 0 0 320px;
+        margin-bottom: 0;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        height: fit-content;
+        min-height: 600px;
+    }
+    
+    .controls .timer-container {
+        margin-bottom: 20px;
     }
 } 
