@@ -395,6 +395,12 @@ class KenKenApp {
     }
 
     handleKeyDown(e) {
+        // Close help modal with ESC key
+        if (e.key === 'Escape' && !this.howToPlayModal.classList.contains('hidden')) {
+            this.closeHowToPlay();
+            return;
+        }
+
         if (!this.selectedCell || this.gameCompleted) return;
 
         const { row, col } = this.selectedCell;
