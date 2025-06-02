@@ -6,6 +6,7 @@ class KenKenApp {
         this.startTime = null;
         this.timer = null;
         this.gameCompleted = false;
+        this.hasStartedPlaying = false;
         
         this.initializeElements();
         this.bindEvents();
@@ -98,6 +99,14 @@ class KenKenApp {
             this.renderPuzzle();
             this.startTimer();
             this.gameCompleted = false;
+            this.hasStartedPlaying = false;
+            
+            // Track Google Analytics event for new game generation
+            this.trackEvent('game_start', {
+                'custom_parameter_1': `${size}x${size}`,
+                'custom_parameter_2': difficulty,
+                'custom_parameter_3': operators.join(',')
+            });
             
         } catch (error) {
             console.error('Error generating puzzle:', error);
@@ -279,6 +288,15 @@ class KenKenApp {
     }
 
     placeNumber(row, col, num) {
+        // Track first user interaction with the puzzle
+        if (!this.hasStartedPlaying && num > 0) {
+            this.trackEvent('first_move', {
+                'custom_parameter_1': `${this.puzzle.size}x${this.puzzle.size}`,
+                'custom_parameter_2': 'user_started_playing'
+            });
+            this.hasStartedPlaying = true;
+        }
+
         this.puzzle.userGrid[row][col] = num;
         this.updateCellDisplay(row, col);
         this.hideNumberPad();
@@ -352,6 +370,14 @@ class KenKenApp {
         if (this.puzzle.validateSolution()) {
             this.gameCompleted = true;
             this.stopTimer();
+            
+            // Track Google Analytics event for puzzle completion
+            this.trackEvent('game_complete', {
+                'custom_parameter_1': `${this.puzzle.size}x${this.puzzle.size}`,
+                'custom_parameter_2': Math.floor((Date.now() - this.startTime) / 1000),
+                'custom_parameter_3': 'solved'
+            });
+            
             this.showWinModal();
         }
     }
@@ -527,12 +553,20 @@ class KenKenApp {
         
         // Reset game state
         this.gameCompleted = false;
+        this.hasStartedPlaying = false;
         
         // Restart timer
         this.startTimer();
         
         // Update visual feedback to clear any error/correct indicators
         this.updateVisualFeedback();
+    }
+
+    // Google Analytics tracking helper
+    trackEvent(eventName, parameters = {}) {
+        if (typeof gtag !== 'undefined') {
+            gtag('event', eventName, parameters);
+        }
     }
 }
 
