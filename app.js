@@ -572,7 +572,7 @@ class KenKenApp {
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new KenKenApp();
+    window.kenkenApp = new KenKenApp();
 });
 
 // PWA Install prompt
@@ -589,4 +589,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
 window.addEventListener('appinstalled', () => {
     console.log('PWA was installed');
     deferredPrompt = null;
+    
+    // Track PWA installation with Google Analytics
+    if (window.kenkenApp) {
+        window.kenkenApp.trackEvent('pwa_install', {
+            'custom_parameter_1': 'user_installed_pwa',
+            'custom_parameter_2': navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop',
+            'custom_parameter_3': new Date().toISOString()
+        });
+    }
 }); 
