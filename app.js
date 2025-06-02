@@ -19,6 +19,7 @@ class KenKenApp {
         this.operatorCheckboxes = document.querySelectorAll('.operator-checkboxes input[type="checkbox"]');
         this.newGameBtn = document.getElementById('new-game-btn');
         this.howToPlayBtn = document.getElementById('how-to-play-btn');
+        this.resetPuzzleBtn = document.getElementById('reset-puzzle-btn');
         this.puzzleGrid = document.getElementById('puzzle-grid');
         this.numberPad = document.getElementById('number-pad');
         this.timerDiv = document.getElementById('timer');
@@ -34,12 +35,15 @@ class KenKenApp {
         this.newGameBtn.addEventListener('click', () => this.generateNewGame());
         this.newGameModalBtn.addEventListener('click', () => this.closeModalAndGenerateNew());
         this.howToPlayBtn.addEventListener('click', () => this.showHowToPlay());
+        this.resetPuzzleBtn.addEventListener('click', () => this.resetPuzzle());
         this.closeHowToPlayBtn.addEventListener('click', () => this.closeHowToPlay());
         this.refreshAppBtn.addEventListener('click', () => this.refreshApp());
         
         // Close number pad when clicking outside
         document.addEventListener('click', (e) => {
-            if (!this.numberPad.contains(e.target) && !e.target.classList.contains('cage')) {
+            if (!this.numberPad.contains(e.target) && 
+                !e.target.classList.contains('cage') &&
+                !e.target.closest('.cage')) {
                 this.hideNumberPad();
             }
         });
@@ -250,6 +254,13 @@ class KenKenApp {
         clearBtn.addEventListener('click', () => this.placeNumber(row, col, 0));
         this.numberPad.appendChild(clearBtn);
 
+        // Add clear cage button
+        const clearCageBtn = document.createElement('button');
+        clearCageBtn.className = 'number-btn clear';
+        clearCageBtn.textContent = 'Clear Cage';
+        clearCageBtn.addEventListener('click', () => this.clearCage(row, col));
+        this.numberPad.appendChild(clearCageBtn);
+
         this.numberPad.classList.remove('hidden');
         
         // Disable control buttons to prevent accidental clicks
@@ -454,6 +465,7 @@ class KenKenApp {
         // Disable buttons
         this.newGameBtn.disabled = true;
         this.howToPlayBtn.disabled = true;
+        this.resetPuzzleBtn.disabled = true;
         this.refreshAppBtn.disabled = true;
         
         // Disable form controls
@@ -468,6 +480,7 @@ class KenKenApp {
         // Enable buttons
         this.newGameBtn.disabled = false;
         this.howToPlayBtn.disabled = false;
+        this.resetPuzzleBtn.disabled = false;
         this.refreshAppBtn.disabled = false;
         
         // Enable form controls
@@ -476,6 +489,50 @@ class KenKenApp {
         this.operatorCheckboxes.forEach(checkbox => {
             checkbox.disabled = false;
         });
+    }
+
+    clearCage(row, col) {
+        // Find all cages that contain this cell
+        const cagesToClear = this.puzzle.cages.filter(cage => 
+            cage.cells.some(cell => cell.row === row && cell.col === col)
+        );
+
+        // Clear all cells in these cages
+        cagesToClear.forEach(cage => {
+            cage.cells.forEach(cell => {
+                this.puzzle.userGrid[cell.row][cell.col] = 0;
+                this.updateCellDisplay(cell.row, cell.col);
+            });
+        });
+
+        this.hideNumberPad();
+        
+        // Update visual feedback
+        this.updateVisualFeedback();
+    }
+
+    resetPuzzle() {
+        if (!this.puzzle) return;
+
+        // Clear all user inputs
+        for (let i = 0; i < this.puzzle.size; i++) {
+            for (let j = 0; j < this.puzzle.size; j++) {
+                this.puzzle.userGrid[i][j] = 0;
+                this.updateCellDisplay(i, j);
+            }
+        }
+
+        // Hide number pad if it's open
+        this.hideNumberPad();
+        
+        // Reset game state
+        this.gameCompleted = false;
+        
+        // Restart timer
+        this.startTimer();
+        
+        // Update visual feedback to clear any error/correct indicators
+        this.updateVisualFeedback();
     }
 }
 
